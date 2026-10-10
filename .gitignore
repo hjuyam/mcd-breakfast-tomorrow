@@ -1,0 +1,19 @@
+# 环境变量与凭证
+.env
+.env.local
+*.env
+
+# 本地画像与计划数据（含个人偏好，不上传）
+profile.yaml
+profile.local.yaml
+plans/
+*.local.yaml
+
+# Token 明文
+*token*
+!mcp-config.example.json
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.log
