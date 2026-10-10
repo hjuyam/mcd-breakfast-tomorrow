@@ -16,6 +16,8 @@
 
 > 觉得有用的话，点个 **⭐ Star** 支持一下！这是麦当劳程序员节创意开发大赛参赛作品，Star 越多排名越靠前。
 
+> 🔗 **在线演示（不用安装、不用 Token，点开就能看）** → https://hjuyam.github.io/mcd-breakfast-tomorrow/
+
 ---
 
 ## 😩 你有没有过这种早上
@@ -176,6 +178,8 @@ mcd-breakfast-tomorrow/
 ├── MCP_INTEGRATION.md              # 实际调用的 MCP 工具与业务价值
 ├── mcp-config.example.json         # 脱敏配置示例
 ├── workbuddy.md                    # WorkBuddy 开发对话上下文
+├── docs/
+│   └── index.html                  # 在线演示站（GitHub Pages）
 ├── assets/
 │   └── weekly-plan.svg             # 「本周早餐安排表」示意图
 └── skills/mcd-breakfast-tomorrow/

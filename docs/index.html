@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>麦麦早餐管家 · 在线演示</title>
+<meta name="description" content="明早那张 ¥9.9 的券，今晚就替你锁定了。基于麦当劳中国 MCP 的 WorkBuddy Skill —— 无需安装、无需 Token 的在线演示。">
+<meta property="og:title" content="麦麦早餐管家 · 在线演示">
+<meta property="og:description" content="明早那张 ¥9.9 的券，今晚就替你锁定了。读常点习惯 + 当日早餐券，前一晚把明早那一单办好。">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23DA291C'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%23FFC72C' font-family='sans-serif'>M</text></svg>">
+<style>
+  *{box-sizing:border-box}
+  :root{
+    --ink:#23201D; --ink2:#5C5751; --ink3:#928C84;
+    --line:#E8E4DD; --bg:#FFFDF9; --panel:#F7F4EF; --panel2:#FFFFFF;
+    --red:#DA291C; --red-dark:#A81F15; --red-bg:#FCEDEB;
+    --yellow:#FFC72C; --yellow-bg:#FFF6DC;
+    --green:#2E7D32; --green-bg:#EAF5EA;
+    --blue:#1A5FA8; --blue-bg:#EAF2FB;
+  }
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:16px; line-height:1.7; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 20px}
+
+  header{border-bottom:1px solid var(--line); background:rgba(255,253,249,.9); backdrop-filter:blur(8px); position:sticky; top:0; z-index:20}
+  .bar{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0}
+  .logo{display:flex; align-items:center; gap:10px; font-weight:600; font-size:15px; letter-spacing:-.01em}
+  .logo .m{width:28px;height:28px;border-radius:7px;background:var(--red);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700}
+  .bar a.gh{font-size:13.5px; color:var(--ink2); text-decoration:none; border:1px solid var(--line); padding:6px 12px; border-radius:8px; background:#fff}
+  .bar a.gh:hover{border-color:var(--ink3); color:var(--ink)}
+
+  .hero{padding:56px 0 40px}
+  .badge{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:var(--red-dark); background:var(--red-bg); border:1px solid #F3C9C4; padding:4px 11px; border-radius:20px}
+  h1{font-size:38px; line-height:1.28; font-weight:700; letter-spacing:-.022em; margin:18px 0 14px}
+  h1 em{font-style:normal; color:var(--red); border-bottom:3px solid var(--yellow); padding-bottom:1px}
+  .lead{font-size:17.5px; color:var(--ink2); max-width:660px; margin:0 0 26px}
+  .cta{display:flex; flex-wrap:wrap; gap:12px}
+  .btn{display:inline-flex; align-items:center; gap:8px; font-size:15px; font-weight:600; padding:13px 24px; border-radius:11px; text-decoration:none; border:1px solid transparent; cursor:pointer; font-family:inherit}
+  .btn.primary{background:var(--red); color:#fff}
+  .btn.primary:hover{background:var(--red-dark)}
+  .btn.ghost{background:#fff; color:var(--ink); border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--ink3)}
+
+  section{padding:44px 0}
+  section+section{border-top:1px solid var(--line)}
+  h2{font-size:23px; font-weight:700; letter-spacing:-.015em; margin:0 0 8px}
+  .sub{color:var(--ink2); font-size:15px; margin:0 0 24px}
+
+  .chat{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:20px; min-height:300px}
+  .msg{display:flex; margin-bottom:14px; opacity:0; transform:translateY(8px); animation:in .32s ease forwards}
+  @keyframes in{to{opacity:1; transform:none}}
+  .msg.u{justify-content:flex-end}
+  .bubble{max-width:82%; padding:11px 15px; border-radius:14px; font-size:15px; line-height:1.65; white-space:pre-wrap; word-break:break-word}
+  .msg.u .bubble{background:var(--red); color:#fff; border-bottom-right-radius:4px}
+  .msg.b .bubble{background:#fff; border:1px solid var(--line); border-bottom-left-radius:4px}
+  .bubble code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; background:var(--panel); padding:1px 5px; border-radius:4px; color:var(--red-dark)}
+  .typing{display:inline-flex; gap:4px; align-items:center; height:14px}
+  .typing i{width:6px;height:6px;border-radius:50%;background:var(--ink3);animation:bl 1.2s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}
+  .typing i:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .chatbar{display:flex; gap:10px; align-items:center; margin-top:16px; flex-wrap:wrap}
+  .hint{font-size:13px; color:var(--ink3)}
+
+  .plan{background:#fff; border:1px solid var(--line); border-radius:16px; padding:6px; overflow:hidden}
+  .plan svg{display:block; width:100%; height:auto}
+
+  .steps{display:grid; gap:12px}
+  .step{display:grid; grid-template-columns:34px 1fr; gap:14px; background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px}
+  .step .n{width:34px;height:34px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:700;color:var(--red-dark)}
+  .step h3{margin:2px 0 4px; font-size:15px; font-weight:650}
+  .step p{margin:0; font-size:14px; color:var(--ink2)}
+  .step code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--panel);padding:1px 5px;border-radius:4px;color:var(--red-dark)}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px}
+  .card{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px; border-left:3px solid var(--line)}
+  .card.r{border-left-color:var(--red)} .card.g{border-left-color:var(--green)} .card.y{border-left-color:var(--yellow)}
+  .card h3{margin:0 0 6px; font-size:14.5px; font-weight:650}
+  .card p{margin:0; font-size:14px; color:var(--ink2)}
+
+  .note{background:var(--yellow-bg); border:1px solid #F2DFA6; border-radius:12px; padding:14px 18px; font-size:14px; color:#6B4E06; margin:0}
+  .note b{color:#4E3804}
+
+  footer{border-top:1px solid var(--line); padding:32px 0 44px; margin-top:20px}
+  footer p{font-size:13px; color:var(--ink3); margin:0 0 6px}
+  footer a{color:var(--ink2)}
+
+  @media (max-width:640px){
+    h1{font-size:29px}
+    .lead{font-size:16px}
+    section{padding:34px 0}
+    .hero{padding:36px 0 28px}
+    .msg .bubble{max-width:90%}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="logo"><span class="m">M</span>麦麦早餐管家</div>
+    <a class="gh" href="https://github.com/hjuyam/mcd-breakfast-tomorrow">GitHub 仓库 ↗</a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero">
+    <span class="badge">在线演示 · 无需安装 · 无需 Token</span>
+    <h1>明早那张 <em>¥9.9</em> 的券，<br>今晚就替你锁定了。</h1>
+    <p class="lead">
+      麦当劳的早餐券按天发放、只在当天 05:00–10:29 有效。
+      真正的问题不是"早上吃什么"，而是——<strong>这件事根本就不该在早上处理。</strong>
+      这个 Skill 把它挪到前一晚做完。
+    </p>
+    <div class="cta">
+      <button class="btn primary" onclick="play()">▶ 看它怎么工作</button>
+      <a class="btn ghost" href="#plan">看本周安排表</a>
+    </div>
+  </section>
+
+  <section id="demo">
+    <h2>它做的事，就一件</h2>
+    <p class="sub">在你的睡前，把明早那一单准备好。下面是一次完整的演示（模拟数据，不会真实下单）。</p>
+    <div class="chat" id="chat"></div>
+    <div class="chatbar">
+      <button class="btn ghost" onclick="play()" id="replay">↻ 重播</button>
+      <span class="hint" id="hint">点上方按钮开始</span>
+    </div>
+  </section>
+
+  <section id="plan">
+    <h2>那张图：本周早餐安排表</h2>
+    <p class="sub">它不是给你一张菜单，而是给你一张<strong>排好的表</strong>——哪天用哪张券、吃什么、多少钱、状态如何。这张图由真实 MCP 数据生成（演示数据已脱敏）。</p>
+    <div class="plan">
+      <svg viewBox="0 0 1200 448" width="100%" role="img">
+        <title>本周早餐安排表</title>
+        <desc>周一至周日的早餐安排：每天对应可用的早餐券、餐品与券后价格，以及锁定状态。</desc>
+        <rect x="0" y="0" width="1200" height="448" fill="#FFFFFF"/>
+        <text x="40" y="54" font-size="21" font-weight="600" fill="#2C2C2A" font-family="sans-serif">本周早餐安排表</text>
+        <text x="40" y="80" font-size="13" fill="#888780" font-family="sans-serif">2026-10-12 ~ 10-18 · 深圳·科技园店 · 07:30 到店自取 · 演示数据</text>
+        <g font-family="sans-serif">
+          <rect x="40" y="104" width="146" height="240" rx="12" fill="#F7F6F1" stroke="#E5E3DC"/>
+          <text x="52" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周一</text><text x="52" y="156" font-size="12" fill="#888780">10-12</text>
+          <line x1="52" y1="170" x2="174" y2="170" stroke="#E5E3DC"/>
+          <text x="52" y="198" font-size="12.5" fill="#2C2C2A">猪柳蛋麦满分</text><text x="52" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
+          <text x="52" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="52" y="300" width="60" height="22" rx="11" fill="#EAF3DE" stroke="#C0DD97"/><text x="82" y="315" font-size="11.5" font-weight="600" fill="#3B6D11" text-anchor="middle">已锁定</text>
+
+          <rect x="202" y="104" width="146" height="240" rx="12" fill="#F7F6F1" stroke="#E5E3DC"/>
+          <text x="214" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周二</text><text x="214" y="156" font-size="12" fill="#888780">10-13</text>
+          <line x1="214" y1="170" x2="336" y2="170" stroke="#E5E3DC"/>
+          <text x="214" y="198" font-size="12.5" fill="#2C2C2A">火腿扒麦满分</text><text x="214" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
+          <text x="214" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="214" y="300" width="60" height="22" rx="11" fill="#EAF3DE" stroke="#C0DD97"/><text x="244" y="315" font-size="11.5" font-weight="600" fill="#3B6D11" text-anchor="middle">已锁定</text>
+
+          <rect x="364" y="104" width="146" height="240" rx="12" fill="#FFFFFF" stroke="#B5D4F4" stroke-width="1.5"/>
+          <text x="376" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周三</text><text x="376" y="156" font-size="12" fill="#888780">10-14</text>
+          <line x1="376" y1="170" x2="498" y2="170" stroke="#E5E3DC"/>
+          <text x="376" y="198" font-size="12.5" fill="#2C2C2A">吉士蛋麦满分</text><text x="376" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
+          <text x="376" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="376" y="300" width="60" height="22" rx="11" fill="#E6F1FB" stroke="#B5D4F4"/><text x="406" y="315" font-size="11.5" font-weight="600" fill="#185FA5" text-anchor="middle">待确认</text>
+
+          <rect x="526" y="104" width="146" height="240" rx="12" fill="#FFFFFF" stroke="#B5D4F4" stroke-width="1.5"/>
+          <text x="538" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周四</text><text x="538" y="156" font-size="12" fill="#888780">10-15</text>
+          <line x1="538" y1="170" x2="660" y2="170" stroke="#E5E3DC"/>
+          <text x="538" y="198" font-size="12.5" fill="#2C2C2A">大脆鸡扒麦满分</text><text x="538" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
+          <text x="538" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="538" y="300" width="60" height="22" rx="11" fill="#E6F1FB" stroke="#B5D4F4"/><text x="568" y="315" font-size="11.5" font-weight="600" fill="#185FA5" text-anchor="middle">待确认</text>
+
+          <rect x="688" y="104" width="146" height="240" rx="12" fill="#FBFAF7" stroke="#E5E3DC"/>
+          <text x="700" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周五</text><text x="700" y="156" font-size="12" fill="#888780">10-16</text>
+          <line x1="700" y1="170" x2="822" y2="170" stroke="#E5E3DC"/>
+          <text x="700" y="198" font-size="12.5" fill="#5F5E5A">猪柳麦满分</text><text x="700" y="216" font-size="12.5" fill="#5F5E5A">套餐</text>
+          <text x="700" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="700" y="300" width="60" height="22" rx="11" fill="#F7F6F1" stroke="#E5E3DC"/><text x="730" y="315" font-size="11.5" font-weight="600" fill="#888780" text-anchor="middle">未安排</text>
+
+          <rect x="850" y="104" width="146" height="240" rx="12" fill="#FBFAF7" stroke="#E5E3DC"/>
+          <text x="862" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周六</text><text x="862" y="156" font-size="12" fill="#888780">10-17</text>
+          <line x1="862" y1="170" x2="984" y2="170" stroke="#E5E3DC"/>
+          <text x="862" y="198" font-size="12.5" fill="#5F5E5A">巧克力味厚松饼</text><text x="862" y="216" font-size="12.5" fill="#5F5E5A">猪柳蛋套餐</text>
+          <text x="862" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥29.9</text>
+          <rect x="862" y="300" width="60" height="22" rx="11" fill="#F7F6F1" stroke="#E5E3DC"/><text x="892" y="315" font-size="11.5" font-weight="600" fill="#888780" text-anchor="middle">未安排</text>
+
+          <rect x="1012" y="104" width="146" height="240" rx="12" fill="#FBFAF7" stroke="#E5E3DC"/>
+          <text x="1024" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周日</text><text x="1024" y="156" font-size="12" fill="#888780">10-18</text>
+          <line x1="1024" y1="170" x2="1146" y2="170" stroke="#E5E3DC"/>
+          <text x="1024" y="198" font-size="12.5" fill="#5F5E5A">板烧鸡腿麦满分</text><text x="1024" y="216" font-size="12.5" fill="#5F5E5A">套餐</text>
+          <text x="1024" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
+          <rect x="1024" y="300" width="60" height="22" rx="11" fill="#F7F6F1" stroke="#E5E3DC"/><text x="1054" y="315" font-size="11.5" font-weight="600" fill="#888780" text-anchor="middle">未安排</text>
+        </g>
+        <rect x="40" y="368" width="1118" height="56" rx="12" fill="#F7F6F1" stroke="#E5E3DC"/>
+        <g font-family="sans-serif">
+          <text x="64" y="392" font-size="12" fill="#888780">本周合计（券后）</text><text x="64" y="412" font-size="17" font-weight="600" fill="#A32D2D">¥109.3</text>
+          <text x="264" y="392" font-size="12" fill="#888780">可用按天早餐券</text><text x="264" y="412" font-size="17" font-weight="600" fill="#2C2C2A">7 张</text>
+          <text x="464" y="392" font-size="12" fill="#888780">已锁定</text><text x="464" y="412" font-size="17" font-weight="600" fill="#2C2C2A">2 天</text>
+          <text x="664" y="392" font-size="12" fill="#888780">早餐时段</text><text x="664" y="412" font-size="17" font-weight="600" fill="#2C2C2A">05:14 – 10:15</text>
+          <text x="964" y="392" font-size="12" fill="#888780">支付方式</text><text x="964" y="412" font-size="17" font-weight="600" fill="#2C2C2A">本人扫码</text>
+        </g>
+      </svg>
+    </div>
+    <p class="note" style="margin-top:14px"><b>核心不是"推荐"，是取交集：</b>只按券推会推给你不爱吃的，只按习惯推会浪费掉当天的券。<strong>两者取交集，才是"既对味、又省钱"的那一单。</strong></p>
+  </section>
+
+  <section id="how">
+    <h2>它是怎么做到的</h2>
+    <p class="sub">全程只编排麦当劳官方 MCP 的工具，Skill 本身不含任何连接与凭证。</p>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><div><h3>对齐时间</h3><p><code>now-time-info</code> 取服务端时间，确定"明天"是哪一天。</p></div></div>
+      <div class="step"><div class="n">2</div><div><h3>学习惯</h3><p><code>order-list</code> 拿单号，逐单 <code>query-order</code> 读定制文本，归纳主餐偏好、固定搭配与<strong>常驻特制</strong>。</p></div></div>
+      <div class="step"><div class="n">3</div><div><h3>取券</h3><p><code>query-my-coupons</code> 筛出目标日有效的早餐券，下单前用 <code>query-store-coupons</code> 复核。</p></div></div>
+      <div class="step"><div class="n">4</div><div><h3>拉次日菜单</h3><p><code>query-meals</code> 带 <code>reservationDate</code>，直接返回<strong>次日早餐</strong>品类。</p></div></div>
+      <div class="step"><div class="n">5</div><div><h3>取交集</h3><p>习惯 ∩ 当日有效券，再用 <code>query-meal-detail</code> 解析特制项与套餐可替换项。</p></div></div>
+      <div class="step"><div class="n">6</div><div><h3>试算与建单</h3><p><code>calculate-price</code> 算价并取回取餐方式，<code>create-order</code> 建预约单，返回订单号与支付链接。</p></div></div>
+    </div>
+  </section>
+
+  <section id="honest">
+    <h2>三个真实存在的坑</h2>
+    <p class="sub">这些不是设想，是实测踩出来的——也是同类项目最容易翻车的地方。</p>
+    <div class="cards">
+      <div class="card r"><h3>随单购价格陷阱</h3><p>部分餐品标"随单购早餐卡优惠"，<strong>必须同时购买早餐卡</strong>才享该价，否则按原价结算。不做判断会让用户看到用不上的低价。</p></div>
+      <div class="card y"><h3>特制参数字典</h3><p>历史订单里的定制是<strong>文本</strong>（<code>麦香鸡酱(不要)</code>），而下单需要 <code>code + key</code>。中间必须有一层映射，且套餐与单品的参数路径不同。</p></div>
+      <div class="card g"><h3>SKU 会下架</h3><p>昨天还能点的餐品，今天可能返回 <code>60001 未匹配到商品</code>。映射与推荐都要能降级，不能硬失败。</p></div>
+    </div>
+  </section>
+
+  <section id="edge">
+    <h2>边界与诚实</h2>
+    <div class="cards">
+      <div class="card r"><h3>支付必须由你本人完成</h3><p>麦当劳官方不提供免密代付。本项目只创建订单并返回支付链接，<strong>不会、也不能替你付款</strong>——所以它的说法永远是"订单已创建，请在 X 分钟内完成支付"。</p></div>
+      <div class="card"><h3>数据以官方为准</h3><p>餐品信息、价格及供应状态以麦当劳官方渠道的实时结果为准。</p></div>
+      <div class="card"><h3>本页是演示</h3><p>所有内容均为虚构演示数据，<strong>不会真实下单</strong>，也不需要你提供任何 Token 或账号信息。</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>麦麦早餐管家 · mcd-breakfast-tomorrow</strong> —— 基于麦当劳中国 MCP 的 WorkBuddy Skill。</p>
+    <p>本项目为麦当劳程序员节创意开发大赛参赛作品，由参赛者独立开发，<strong>非麦当劳官方产品</strong>。本项目不构成对麦当劳及其关联方商标的任何授权。</p>
+    <p><a href="https://github.com/hjuyam/mcd-breakfast-tomorrow">github.com/hjuyam/mcd-breakfast-tomorrow</a>　·　如果它让你的早上省了心，去点个 ⭐</p>
+  </footer>
+
+</div>
+
+<script>
+const SCRIPT = [
+  {who:'u', text:'安排一下明早的早餐'},
+  {who:'b', text:'在读你近 10 单历史订单…'},
+  {who:'b', text:'📋 习惯已归纳\n· 固定门店：深圳·科技园店\n· 出没时段：08:09–08:18\n· 主餐偏好：鸡扒类\n· 固定搭配：优品豆浆小杯\n· 常驻特制：去酱、去芝士'},
+  {who:'b', text:'🎟️ 明早有一张有效的早餐券：【早餐两件套】¥9.9\n（有效期 05:00–10:29，过期作废）'},
+  {who:'b', text:'明早 07:30 · 到店自取\n🍔 大脆鸡扒麦满分套餐（麦香鸡酱：不要）\n🥛 优品豆浆小杯\n💰 ¥9.9（原价 ¥18.5）\n\n要今晚锁定吗？回「好」我就下单'},
+  {who:'u', text:'好'},
+  {who:'b', text:'订单已创建 ✅ 请在 15 分钟内完成支付\n🔗 https://m.mcd.cn/pay/••••••\n⏰ 支付截止 14:52\n\n（支付必须你本人完成，我这边只能把订单准备好）'}
+];
+
+let timer = null, playing = false;
+
+function el(tag, cls, html){ const e = document.createElement(tag); if(cls) e.className = cls; if(html !== undefined) e.innerHTML = html; return e; }
+
+function addMsg(m){
+  const chat = document.getElementById('chat');
+  chat.querySelectorAll('.msg.tmp').forEach(n => n.remove());
+  const row = el('div', 'msg ' + m.who);
+  const b = el('div', 'bubble');
+  b.textContent = m.text;
+  row.appendChild(b);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+  return row;
+}
+
+function showTyping(){
+  const chat = document.getElementById('chat');
+  const row = el('div', 'msg b tmp');
+  row.appendChild(el('div', 'bubble', '<span class="typing"><i></i><i></i><i></i></span>'));
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function play(){
+  if(playing) return;
+  const chat = document.getElementById('chat');
+  clearTimeout(timer);
+  chat.innerHTML = '';
+  playing = true;
+  document.getElementById('hint').textContent = '演示进行中…';
+  let i = 0;
+  const step = () => {
+    if(i >= SCRIPT.length){
+      playing = false;
+      document.getElementById('hint').textContent = '演示结束 · 真实使用时，这一步之后你只需要到店取餐';
+      return;
+    }
+    const m = SCRIPT[i++];
+    if(m.who === 'b'){
+      showTyping();
+      timer = setTimeout(() => { addMsg(m); step(); }, 700);
+    } else {
+      addMsg(m);
+      timer = setTimeout(step, 520);
+    }
+  };
+  step();
+}
+
+document.getElementById('chat').innerHTML = '<div class="msg b"><div class="bubble">点「▶ 看它怎么工作」，我会用一次完整对话演示它做了什么。</div></div>';
+
+if(location.hash === '#demo') setTimeout(play, 400);
+</script>
+</body>
+</html>
