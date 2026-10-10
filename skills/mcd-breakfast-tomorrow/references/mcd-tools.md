@@ -38,7 +38,7 @@ now-time-info
 
 ### `query-order`
 - 入参：`orderId`。
-- ⚠️ **定制信息在这里**：`orderProductList[].comboItemList[].itemName`，格式为**自然语言文本**，如 `大脆鸡扒麦香鸡酱(不要)`、`芝芝火腿扒堡 吉士(不要)`。
+- ⚠️ **定制信息在这里**：`orderProductList[].comboItemList[].itemName`，格式为**自然语言文本**，如 `板烧鸡腿堡 生菜(不要)`、`麦辣鸡腿汉堡 番茄酱(不要)`。
 - 需要把文本解析后，映射回 `query-meal-detail` 的 `code` + `key` 才能用于下单。
 - 同一接口还返回 `couponList`、`realTotalAmount`、`pickupCode`、`expirePayTime`。
 

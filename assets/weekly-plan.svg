@@ -3,7 +3,7 @@
 <desc>周一至周日的早餐安排：每天对应可用的早餐券、餐品与券后价格，以及锁定状态。</desc>
 <rect x="0" y="0" width="1200" height="448" fill="#FFFFFF"/>
 <text x="40" y="54" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif" font-size="21" font-weight="600" fill="#2C2C2A">本周早餐安排表</text>
-<text x="40" y="80" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif" font-size="13" fill="#888780">2026-10-12 ~ 10-18 · 东莞·东深二路店 · 07:30 到店自取 · 演示数据</text>
+<text x="40" y="80" font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif" font-size="13" fill="#888780">2026-10-12 ~ 10-18 · 深圳·科技园店 · 07:30 到店自取 · 演示数据</text>
 
 <g font-family="-apple-system,BlinkMacSystemFont,PingFang SC,Hiragino Sans GB,Microsoft YaHei,sans-serif">
   <rect x="40" y="104" width="146" height="240" rx="12" fill="#F7F6F1" stroke="#E5E3DC" stroke-width="1"/>
@@ -40,7 +40,7 @@
   <text x="538" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周四</text>
   <text x="538" y="156" font-size="12" fill="#888780">10-15</text>
   <line x1="538" y1="170" x2="660" y2="170" stroke="#E5E3DC" stroke-width="1"/>
-  <text x="538" y="198" font-size="12.5" fill="#2C2C2A">大脆鸡扒麦满分</text>
+  <text x="538" y="198" font-size="12.5" fill="#2C2C2A">猪柳炒双蛋堡</text>
   <text x="538" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
   <text x="538" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
   <rect x="538" y="300" width="60" height="22" rx="11" fill="#E6F1FB" stroke="#B5D4F4" stroke-width="1"/>

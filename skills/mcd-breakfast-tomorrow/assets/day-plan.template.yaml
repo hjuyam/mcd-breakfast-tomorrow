@@ -6,18 +6,18 @@ serve_date: 2026-10-11
 reservation_date: "2026-10-11 07:30"
 status: drafted
 
-store_code: "1600000"
+store_code: ""                # 来自 profile.yaml
 fulfillment: take-in-store
 take_way_code: null          # 由 calculate-price 的 takeWayList[].code 回填
 
 items:
-  - product_code: "9900003451"
-    name: "大脆鸡扒麦满分套餐"
+  - product_code: "<套餐商品编码>"
+    name: "<套餐名称>"
     quantity: 1
     modification: []         # 已应用的特制；每项含 code / key
     round_list: []           # 套餐子项与其特制（与单品路径不同）
-  - product_code: "1088"
-    name: "优品豆浆小杯"
+  - product_code: "<搭配单品编码>"
+    name: "<搭配单品名称>"
     quantity: 1
 
 coupon:

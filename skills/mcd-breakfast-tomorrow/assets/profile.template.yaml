@@ -1,36 +1,38 @@
 # 长期画像模板 · profile.template.yaml
 # 复制为 profile.yaml 使用。profile.yaml 属个人信息，已被 .gitignore 排除，不上传。
+# 注意：以下字段全部由系统在首次运行时，从「使用者本人」的历史订单中归纳，
+#       本模板不预置任何人的偏好，也不区分用户。
 
 store:
-  code: "1600000"            # 门店编码（storeCode），建档时写死
-  name: "示例门店"
-  reservation: true          # 该门店是否支持预约
+  code: ""                   # 门店编码（storeCode），建档时询问用户后写入
+  name: ""
+  reservation: null          # 该门店是否支持预约（来自 query-nearby-stores）
   fulfillment: take-in-store # eat-in 堂食 | take-in-store 外带 | take-dt-quick 得来速
-  ready_time: "07:30"        # 目标取餐时间，须落在该店早餐时段内
-  breakfast_window: "05:14-10:15"  # 该店早餐时段（来自 reservationTimeOptions）
+  ready_time: ""             # 目标取餐时间，须落在该店早餐时段内
+  breakfast_window: ""       # 该店早餐时段（来自 reservationTimeOptions）
 
 taste:
-  main_preference: []        # 主餐偏好类别，如 [鸡扒类]
+  main_preference: []        # 主餐偏好类别（从本人高频订单中归纳）
   likes: []                  # 预筛加权项
   avoid: []                  # 硬排除，永不出现在推荐里
 
-# 常驻特制：从 query-order 的 comboItemList[].itemName 归纳
-# 例：{ target: "麦香鸡酱", action: "remove" } 表示该特制项一律不选
+# 常驻特制：从本人 query-order 的 comboItemList[].itemName 归纳
+# 结构示例：{ target: "<特制项名称>", action: "remove" } 表示该特制项一律不选
 standing_modification: []
 
 habit:
-  frequent_hours: []         # 出没时段，如 ["08:09-08:18"]
-  fixed_pairing: []          # 固定搭配子项，如 [优品豆浆小杯]
-  frequency: "weekly"        # 使用频次印象
+  frequent_hours: []         # 出没时段（从本人历史下单时间归纳）
+  fixed_pairing: []          # 固定搭配子项（反复出现的单品）
+  frequency: ""              # 使用频次印象
 
 budget:
-  per_day: 15
-  hard_ceiling: 22           # 超此值不下单，转为提醒
+  per_day: null
+  hard_ceiling: null         # 超此值不下单，转为提醒
 
 push:
   enabled: false             # 定时唤起默认关闭
-  at: "20:00"
-  quiet_days: [6, 7]
+  at: ""
+  quiet_days: []
   no_reply: remind_only      # remind_only | skip
 
 mode: reminder               # plan_only | reminder | full_auto

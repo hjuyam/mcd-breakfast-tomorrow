@@ -126,7 +126,7 @@
 
   <section id="demo">
     <h2>它做的事，就一件</h2>
-    <p class="sub">在你的睡前，把明早那一单准备好。下面是一次完整的演示（模拟数据，不会真实下单）。</p>
+    <p class="sub">在你的睡前，把明早那一单准备好。下面是一次完整的演示（模拟数据，不会真实下单）。<strong>演示里的所有偏好，都是它从该用户自己的订单里学出来的——换一个人用，学出来的就是另一个人的习惯。</strong></p>
     <div class="chat" id="chat"></div>
     <div class="chatbar">
       <button class="btn ghost" onclick="play()" id="replay">↻ 重播</button>
@@ -169,7 +169,7 @@
           <rect x="526" y="104" width="146" height="240" rx="12" fill="#FFFFFF" stroke="#B5D4F4" stroke-width="1.5"/>
           <text x="538" y="134" font-size="14" font-weight="600" fill="#2C2C2A">周四</text><text x="538" y="156" font-size="12" fill="#888780">10-15</text>
           <line x1="538" y1="170" x2="660" y2="170" stroke="#E5E3DC"/>
-          <text x="538" y="198" font-size="12.5" fill="#2C2C2A">大脆鸡扒麦满分</text><text x="538" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
+          <text x="538" y="198" font-size="12.5" fill="#2C2C2A">猪柳炒双蛋堡</text><text x="538" y="216" font-size="12.5" fill="#2C2C2A">套餐</text>
           <text x="538" y="282" font-size="17" font-weight="600" fill="#A32D2D">¥9.9</text>
           <rect x="538" y="300" width="60" height="22" rx="11" fill="#E6F1FB" stroke="#B5D4F4"/><text x="568" y="315" font-size="11.5" font-weight="600" fill="#185FA5" text-anchor="middle">待确认</text>
 
@@ -220,13 +220,13 @@
     </div>
   </section>
 
-  <section id="honest">
-    <h2>三个真实存在的坑</h2>
-    <p class="sub">这些不是设想，是实测踩出来的——也是同类项目最容易翻车的地方。</p>
+  <section id="verified">
+    <h2>它是真的跑通过的</h2>
+    <p class="sub">下面这些不是设想，是在真实麦当劳 MCP 服务上验证过的。</p>
     <div class="cards">
-      <div class="card r"><h3>随单购价格陷阱</h3><p>部分餐品标"随单购早餐卡优惠"，<strong>必须同时购买早餐卡</strong>才享该价，否则按原价结算。不做判断会让用户看到用不上的低价。</p></div>
-      <div class="card y"><h3>特制参数字典</h3><p>历史订单里的定制是<strong>文本</strong>（<code>麦香鸡酱(不要)</code>），而下单需要 <code>code + key</code>。中间必须有一层映射，且套餐与单品的参数路径不同。</p></div>
-      <div class="card g"><h3>SKU 会下架</h3><p>昨天还能点的餐品，今天可能返回 <code>60001 未匹配到商品</code>。映射与推荐都要能降级，不能硬失败。</p></div>
+      <div class="card g"><h3>非早餐时段，能查到次日早餐菜单</h3><p>同一门店、同一时刻，带上目标日参数返回的是<strong>早餐品类</strong>，不带则返回当前时段菜单。这是"提前一晚"能成立的前提。</p></div>
+      <div class="card g"><h3>特制能跟着预约单一起传下去</h3><p>历史订单里的定制（如"少冰""不要生菜"）可以还原成下单参数，与预约日期一起提交并正确计价。</p></div>
+      <div class="card g"><h3>门店的早餐时段可查、可预约</h3><p>门店会返回是否支持预约，以及接下来每一天的可预约时段，取餐时间据此校验。</p></div>
     </div>
   </section>
 
@@ -251,9 +251,9 @@
 const SCRIPT = [
   {who:'u', text:'安排一下明早的早餐'},
   {who:'b', text:'在读你近 10 单历史订单…'},
-  {who:'b', text:'📋 习惯已归纳\n· 固定门店：深圳·科技园店\n· 出没时段：08:09–08:18\n· 主餐偏好：鸡扒类\n· 固定搭配：优品豆浆小杯\n· 常驻特制：去酱、去芝士'},
+  {who:'b', text:'📋 习惯已归纳\n· 常用门店：深圳·科技园店\n· 出没时段：07:5x\n· 主餐偏好：猪柳蛋麦满分类\n· 固定搭配：冰美式中杯\n· 常驻特制：少冰'},
   {who:'b', text:'🎟️ 明早有一张有效的早餐券：【早餐两件套】¥9.9\n（有效期 05:00–10:29，过期作废）'},
-  {who:'b', text:'明早 07:30 · 到店自取\n🍔 大脆鸡扒麦满分套餐（麦香鸡酱：不要）\n🥛 优品豆浆小杯\n💰 ¥9.9（原价 ¥18.5）\n\n要今晚锁定吗？回「好」我就下单'},
+  {who:'b', text:'明早 07:45 · 到店自取\n🍔 猪柳蛋麦满分组合（不要番茄酱）\n☕ 冰美式中杯（少冰）\n💰 ¥9.9（原价 ¥18.5）\n\n要今晚锁定吗？回「好」我就下单'},
   {who:'u', text:'好'},
   {who:'b', text:'订单已创建 ✅ 请在 15 分钟内完成支付\n🔗 https://m.mcd.cn/pay/••••••\n⏰ 支付截止 14:52\n\n（支付必须你本人完成，我这边只能把订单准备好）'}
 ];
