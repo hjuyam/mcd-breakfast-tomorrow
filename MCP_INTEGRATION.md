@@ -13,7 +13,7 @@
 | 接入地址 | `https://mcp.mcd.cn` |
 | 传输协议 | Streamable HTTP |
 | 鉴权 | 请求头 `Authorization: Bearer <MCD_MCP_TOKEN>` |
-| 工具总数 | 34（本项目使用其中 10 个） |
+| 工具总数 | 34（本项目使用其中 12 个） |
 
 > Token 通过环境变量注入，**不写入仓库**。配置示例见 [`mcp-config.example.json`](./mcp-config.example.json)。
 
@@ -29,10 +29,12 @@
 | 4 | `query-order` | **逐单读取特调定制信息**（`itemName`），归纳常驻特制 |
 | 5 | `query-meal-detail` | 读取餐品的选配轮次与**特制项 code/key**，以及可替换项与差价 |
 | 6 | `query-meals` | 带 `reservationDate` 拉取**次日早餐菜单** |
-| 7 | `query-my-coupons` | 读取券包（含**按天发放、当天 05:00–10:29 有效**的早餐券） |
-| 8 | `available-coupons` | 读取当前可领取的券，补齐券来源 |
-| 9 | `calculate-price` | 试算金额、优惠、应付，并取回 `takeWayList` 中的取餐方式 code |
-| 10 | `create-order` | 带 `reservationDate` 创建预约订单，返回订单号与支付链接 |
+| 7 | `available-coupons` | 查询当前**可领取**的券 |
+| 8 | `auto-bind-coupons` | **一键领取**全部可领券（券不会自己进卡包） |
+| 9 | `query-my-coupons` | 读取券包（含**按天发放、当天 05:00–10:29 有效**的早餐券） |
+| 10 | `query-store-coupons` | 查当前门店**真正可用**的券，并取回 **`couponId` / `couponCode`** 与适用商品 |
+| 11 | `calculate-price` | 试算金额、优惠、应付，并取回 `takeWayList` 中的取餐方式 code |
+| 12 | `create-order` | 带 `reservationDate` 创建预约订单，返回订单号与支付链接 |
 
 ---
 
@@ -52,14 +54,20 @@ sequenceDiagram
         M-->>S: comboItemList[].itemName（含定制文本）
     end
     Note over S: 归纳：门店 / 主餐偏好 / 固定搭配 / 常驻特制
+    S->>M: available-coupons
+    M-->>S: 当前可领的券
+    S->>M: auto-bind-coupons
+    M-->>S: 一键领取完成
     S->>M: query-my-coupons
     M-->>S: 券包（按天 + 有效期）
     S->>M: query-meals(storeCode, orderType, beType, reservationDate)
     M-->>S: 次日早餐菜单
     S->>M: query-meal-detail(code, ...)
     M-->>S: 选配轮次 + 特制 code/key
-    Note over S: 习惯 ∩ 当日有效券 → 生成方案
-    S->>M: calculate-price(..., reservationDate, items, modification)
+    S->>M: query-store-coupons(..., reservationDate)
+    M-->>S: couponId / couponCode / products[]
+    Note over S: 习惯 ∩ 券 → 生成方案
+    S->>M: calculate-price(..., reservationDate, items, couponId)
     M-->>S: 金额 / 优惠 / takeWayList
     S->>M: create-order(..., reservationDate, takeWayCode)
     M-->>S: 订单号 + 支付链接
@@ -74,14 +82,14 @@ sequenceDiagram
 **② 学习惯**
 `order-list` 取单号 → 逐单 `query-order` 取 `comboItemList[].itemName` → 归纳出：固定门店、出没时段、主餐偏好、固定搭配、**常驻特制**。
 
-**③ 取券**
-`query-my-coupons` + `available-coupons`，筛出**目标日在有效期内**的券。
+**③ 领券 → 筛券（顺序不可颠倒）**
+`available-coupons`（可领）→ `auto-bind-coupons`（一键领）→ `query-my-coupons`（按**目标日**筛出有效的券）。
 
 **④ 拉次日菜单**
-`query-meals` 带 `reservationDate`（格式 `yyyy-MM-dd HH:mm`）→ 返回**次日早餐品类**。
+`query-meals` 带 `reservationDate`（格式 `yyyy-MM-dd HH:mm`）→ 返回**次日早餐品类**，同时确认券对应商品当前仍在售。
 
 **⑤ 取交集并试算**
-`习惯 ∩ 当日有效券` → 用 `query-meal-detail` 解析特制 code/key → `calculate-price` 试算（同时取回 `takeWayList[].code`）。
+`习惯 ∩ 券适用商品` → 用 `query-meal-detail` 解析特制 code/key → `query-store-coupons` 取 `couponId`/`couponCode` → `calculate-price` 试算。
 
 **⑥ 建单**
 `create-order` 带 `reservationDate` 与 `takeWayCode` → 返回订单号 + 支付链接。**支付由用户本人完成。**
@@ -136,6 +144,34 @@ sequenceDiagram
 | 历史订单（列表） | `order-list` **不含**定制字段 |
 | 历史订单（详情） | `query-order` 的 `comboItemList[].itemName`（**自然语言文本**，需解析映射） |
 
+### 4.5 券：`couponId` / `couponCode` 的来源，以及"时刻可用性"
+
+**来源**：只有 `query-store-coupons` 返回 `couponId` 与 `couponCode`；它还返回 `tradeDateTime` 与 **`products[].productCode`（券的适用商品）**。
+`available-coupons` 与 `query-my-coupons` **都不提供** id/code。
+
+**时刻可用性（实测，同一账户、同一时刻 11:27，目标日 = 次日 07:30）**：
+
+| 接口 | 返回 |
+|---|---|
+| `query-my-coupons` | 12 张，含「次日的早餐券，有效期 次日 05:00–10:29」 |
+| `query-store-coupons(reservationDate=次日 07:30)` | **1 张**（当日有效的那张），**未返回次日早餐券** |
+
+**结论：`query-store-coupons` 按"当前时刻"判定券是否可用，`reservationDate` 不会让它提前返回"未来才生效"的券。**
+
+**由此产生的建单策略**：
+
+| 情形 | 处理 |
+|---|---|
+| 券在目标日**已可用** | 直接按预约建单 |
+| 券**尚未生效** | **不提前建单**；落成方案，到目标日早餐时段再建单（届时券已可用，可正常取到 `couponId`/`couponCode`） |
+
+> 提前建单会挂不上券、或按原价结算。
+
+### 4.6 `realTotalAmount` 不能用来推断价格偏好
+
+`order-list` 的 `realTotalAmount` 受券影响极大 —— 用券核销的订单可能为 **¥0**。
+因此本项目**不使用它推断用户的价格偏好**，价格判断一律基于商品 `originalPrice` 或 `calculate-price` 结果。
+
 ---
 
 ## 五、业务价值
@@ -143,7 +179,7 @@ sequenceDiagram
 | 能力 | 对应现实问题 | 价值 |
 |---|---|---|
 | **次日菜单可查** | 早上没时间研究吃什么 | 把决策挪到前一晚 |
-| **习惯 ∩ 券** | 券当天 10:29 作废，容易被浪费 | 让"对味"和"省钱"同时成立 |
+| **领券 + 习惯 ∩ 券** | 券按天发放、当天 10:29 作废，容易被浪费 | 让"对味"和"省钱"同时成立 |
 | **常驻特制自动带上** | 每次点单都要手动做同一项特制调整 | 免去重复配置，且减少出错 |
 | **预约建单** | 早上到店要等餐 | 到店即取的体验 |
 
@@ -153,5 +189,6 @@ sequenceDiagram
 
 1. **支付必须人工**。`create-order` 只返回订单号与支付链接，官方不提供免密代付。本项目所有输出措辞均为「订单已创建，请在 X 分钟内完成支付」。
 2. **SKU 会变动**。实测中出现餐品下架（返回 `60001 未匹配到商品`），特制映射需具备降级能力。
-3. **券的可用性以官方实时校验为准**。`query-my-coupons` 返回的是持有券，不承诺可用于当前订单；下单前应结合 `query-store-coupons` 复核。
+3. **券在生效前无法挂到订单上**。见 4.5，需按券的可用性分流建单时机。
 4. **金额单位为分**。`calculate-price` 返回的价格需除以 100 转为元。
+5. **运行环境**：依赖客户端已配置 `mcd-mcp` 连接器与有效 Token；连接器按客户端分别生效。

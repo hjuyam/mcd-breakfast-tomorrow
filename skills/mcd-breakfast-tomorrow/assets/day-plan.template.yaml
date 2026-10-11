@@ -1,33 +1,38 @@
 # 次日计划模板 · day-plan.template.yaml
 # 每晚生成一份，存放于 plans/YYYY-MM-DD.yaml。status 是执行进度的唯一事实来源。
-# drafted -> confirmed -> ordered -> paid -> done
+# planned -> confirmed -> ordered -> paid -> done
+#   planned   = 方案已就绪、但尚未建单（券还没到可用期）
+#   confirmed = 用户已确认方案
+#   ordered   = 已建单，待支付
+#   paid      = 已支付
+#   done      = 已取餐
 
-serve_date: 2026-10-11
-reservation_date: "2026-10-11 07:30"
-status: drafted
+serve_date: "<YYYY-MM-DD>"
+reservation_date: "<YYYY-MM-DD HH:mm>"
+status: planned
 
 store_code: ""                # 来自 profile.yaml
 fulfillment: take-in-store
-take_way_code: null          # 由 calculate-price 的 takeWayList[].code 回填
+take_way_code: null           # 由 calculate-price 的 takeWayList[].code 回填
 
 items:
   - product_code: "<套餐商品编码>"
     name: "<套餐名称>"
     quantity: 1
-    modification: []         # 已应用的特制；每项含 code / key
-    round_list: []           # 套餐子项与其特制（与单品路径不同）
+    modification: []          # 已应用的特制；每项含 code / key
+    round_list: []            # 套餐子项与其特制（与单品路径不同）
   - product_code: "<搭配单品编码>"
     name: "<搭配单品名称>"
     quantity: 1
 
 coupon:
   name: null
-  coupon_id: null
+  coupon_id: null             # 仅 query-store-coupons 提供；取不到则说明券尚未生效
   coupon_code: null
-  valid_until: null          # 早餐券通常为当日 10:29
+  valid_window: null          # 如 "05:00-10:29"
 
 price:
-  original: null             # 单位：元
+  original: null              # 单位：元
   discount: null
   payable: null
 
@@ -38,4 +43,4 @@ order:
   created_at: null
   pickup_code: null
 
-notes: []                    # 异常与降级记录，如「餐品下架，已替换为同类」
+notes: []                     # 异常与降级记录，如「餐品下架，已替换为同类」

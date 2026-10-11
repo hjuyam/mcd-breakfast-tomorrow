@@ -213,10 +213,11 @@
     <div class="steps">
       <div class="step"><div class="n">1</div><div><h3>对齐时间</h3><p><code>now-time-info</code> 取服务端时间，确定"明天"是哪一天。</p></div></div>
       <div class="step"><div class="n">2</div><div><h3>学习惯</h3><p><code>order-list</code> 拿单号，逐单 <code>query-order</code> 读定制文本，归纳主餐偏好、固定搭配与<strong>常驻特制</strong>。</p></div></div>
-      <div class="step"><div class="n">3</div><div><h3>取券</h3><p><code>query-my-coupons</code> 筛出目标日有效的早餐券，下单前用 <code>query-store-coupons</code> 复核。</p></div></div>
-      <div class="step"><div class="n">4</div><div><h3>拉次日菜单</h3><p><code>query-meals</code> 带 <code>reservationDate</code>，直接返回<strong>次日早餐</strong>品类。</p></div></div>
-      <div class="step"><div class="n">5</div><div><h3>取交集</h3><p>习惯 ∩ 当日有效券，再用 <code>query-meal-detail</code> 解析特制项与套餐可替换项。</p></div></div>
-      <div class="step"><div class="n">6</div><div><h3>试算与建单</h3><p><code>calculate-price</code> 算价并取回取餐方式，<code>create-order</code> 建预约单，返回订单号与支付链接。</p></div></div>
+      <div class="step"><div class="n">3</div><div><h3>领券 → 筛券</h3><p><code>available-coupons</code> 看有什么可领 → <code>auto-bind-coupons</code> 一键领齐 → <code>query-my-coupons</code> 筛出目标日有效的那张。</p></div></div>
+      <div class="step"><div class="n">4</div><div><h3>拉次日菜单</h3><p><code>query-meals</code> 带 <code>reservationDate</code>，直接返回<strong>次日早餐</strong>品类，并确认券对应商品仍在售。</p></div></div>
+      <div class="step"><div class="n">5</div><div><h3>取交集</h3><p>习惯 ∩ 券适用商品，再用 <code>query-meal-detail</code> 解析特制项与套餐可替换项。</p></div></div>
+      <div class="step"><div class="n">6</div><div><h3>试算</h3><p><code>query-store-coupons</code> 取券的 <code>couponId</code>/<code>couponCode</code>，<code>calculate-price</code> 算价并取回取餐方式。</p></div></div>
+      <div class="step"><div class="n">7</div><div><h3>建单</h3><p><code>create-order</code> 建预约单，返回订单号与支付链接。券未到生效时段时，等它生效后再下单，确保券真的用得上。</p></div></div>
     </div>
   </section>
 
